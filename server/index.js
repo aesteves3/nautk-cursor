@@ -9,11 +9,23 @@ import nodemailer from 'nodemailer';
 dotenv.config({ path: path.join(path.dirname(fileURLToPath(import.meta.url)), '.env') });
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const root = path.join(__dirname, '..');
+
+function findProjectRoot() {
+  let dir = path.resolve(__dirname, '..');
+  for (let i = 0; i < 4; i++) {
+    if (fs.existsSync(path.join(dir, 'package.json'))) return dir;
+    dir = path.resolve(dir, '..');
+  }
+  return path.resolve(__dirname, '..');
+}
+
+const root = findProjectRoot();
 const dataDir = path.join(__dirname, 'data');
-const coursesFile = fs.existsSync(path.join(root, 'dist/data/courses.json'))
-  ? path.join(root, 'dist/data/courses.json')
-  : path.join(root, 'public/data/courses.json');
+const coursesCandidates = [
+  path.join(root, 'dist/data/courses.json'),
+  path.join(root, 'public/data/courses.json'),
+];
+const coursesFile = coursesCandidates.find((p) => fs.existsSync(p));
 
 fs.mkdirSync(dataDir, { recursive: true });
 
@@ -26,6 +38,9 @@ app.use(cors({
 app.use(express.json({ limit: '64kb' }));
 
 function loadCourses() {
+  if (!coursesFile) {
+    throw new Error(`courses.json not found. Checked: ${coursesCandidates.join(', ')}`);
+  }
   const raw = fs.readFileSync(coursesFile, 'utf8');
   return JSON.parse(raw);
 }
@@ -165,6 +180,21 @@ if (fs.existsSync(distPath)) {
   });
 }
 
-app.listen(port, () => {
-  console.log(`NAUTK API listening on http://localhost:${port}`);
+const host = '0.0.0.0';
+
+app.listen(port, host, () => {
+  console.log(`NAUTK listening on ${host}:${port}`);
+  console.log(`Project root: ${root}`);
+  console.log(`Courses: ${coursesFile || 'NOT FOUND — run npm run build'}`);
+  console.log(`Static dist: ${fs.existsSync(path.join(root, 'dist')) ? 'yes' : 'no'}`);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught exception:', err);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.error('Unhandled rejection:', err);
+  process.exit(1);
 });
