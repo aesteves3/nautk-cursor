@@ -13,7 +13,12 @@
     "import:courses": "node scripts/import-courses.mjs",
     "server:install": "npm install --prefix server",
     "server:dev": "npm run dev --prefix server",
-    "server:start": "npm run start --prefix server"
+    "server:start": "node server/index.js",
+    "render-build": "npm install --include=dev && npm run build && npm run server:install",
+    "start": "node server/index.js"
+  },
+  "engines": {
+    "node": ">=20"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^17.0.0",

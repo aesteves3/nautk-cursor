@@ -1,17 +1,17 @@
-# Render.com — connect your Git repo and deploy (no local testing required)
-# Dashboard: New → Blueprint → select this repo, or New → Web Service manually with these settings.
+# Render.com — connect Git repo → New → Blueprint (or Web Service with these settings)
 
 services:
   - type: web
     name: nautk-web
     runtime: node
     plan: free
-    buildCommand: npm install && npm run build && npm run server:install
-    startCommand: npm run server:start
+    buildCommand: npm run render-build
+    startCommand: npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
         value: "22"
+      - key: NPM_CONFIG_PRODUCTION
+        value: "false"
       - key: MAIL_TO
         value: contato@nautk.org
-      # Add SMTP_* in the Render dashboard for real email (optional for first test)
