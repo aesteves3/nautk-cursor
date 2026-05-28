@@ -1,0 +1,74 @@
+{
+  "name": "Course",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Course title"
+    },
+    "certification_level": {
+      "type": "string",
+      "enum": [
+        "arrais",
+        "mestre",
+        "capitao"
+      ],
+      "description": "Brazilian Navy certification level"
+    },
+    "description": {
+      "type": "string",
+      "description": "Short course description"
+    },
+    "long_description": {
+      "type": "string",
+      "description": "Detailed course description"
+    },
+    "duration_hours": {
+      "type": "number",
+      "description": "Total course hours"
+    },
+    "price": {
+      "type": "number",
+      "description": "Price in BRL"
+    },
+    "modules": {
+      "type": "array",
+      "description": "Course modules list",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "hours": {
+            "type": "number"
+          },
+          "topics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Course image URL"
+    },
+    "next_start_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Next class start date"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "title",
+    "certification_level",
+    "price"
+  ]
+}
