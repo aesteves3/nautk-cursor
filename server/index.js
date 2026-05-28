@@ -11,7 +11,9 @@ dotenv.config({ path: path.join(path.dirname(fileURLToPath(import.meta.url)), '.
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 const dataDir = path.join(__dirname, 'data');
-const coursesFile = path.join(root, 'public/data/courses.json');
+const coursesFile = fs.existsSync(path.join(root, 'dist/data/courses.json'))
+  ? path.join(root, 'dist/data/courses.json')
+  : path.join(root, 'public/data/courses.json');
 
 fs.mkdirSync(dataDir, { recursive: true });
 
